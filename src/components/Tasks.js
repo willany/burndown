@@ -1,7 +1,10 @@
 import React, { Component } from "react"
 
+import TaskCard from "./TaskCard"
+
 const TEAM_ID = 766419
-const ACCESS_TOKEN = "75cb16379f106ac9ea40f8da1fe52b63e53b989"
+const ACCESS_TOKEN = "75cb16379f106ac9ea40f8da1fe52b63e53b9898"
+				
 
 
 class Tasks extends Component{
@@ -9,14 +12,14 @@ class Tasks extends Component{
 	constructor(props) {
 		super(props)
 		this.state = {
-			tasks: [],
+			tasks: {},
 			isLoaded: false
 		}
 	}
 
 	componentDidMount(){
 
-		fetch(`https://api.clickup.com/api/v1/team/${TEAM_ID}/task`,  {headers: {'Authorization': ACCESS_TOKEN}})
+		fetch(`https://api.clickup.com/api/v1/team/${TEAM_ID}/task?&include_closed=true`,  {headers: {'Authorization': ACCESS_TOKEN}})
 			.then(res => res.json())
 			.then(json => {
 				this.setState({
@@ -26,36 +29,37 @@ class Tasks extends Component{
 			})
 	}
 
-	// getTasks = async () => {
+	// TO DO
+	// To be refactored
 
-	// 	const api_call = await fetch(`https://api.clickup.com/api/v1/team/${TEAM_ID}/task`, 
-	// 		{ 
-	// 		   method: 'GET', 
-	// 		   headers: new Headers({
-	// 		     'Authorization': ACCESS_TOKEN
-	// 		})
-	// 	 })
+	allTasksLenght = () => {
+		return (this.state.tasks).tasks.length
+	}
 
-	// 	const data = await api_call.json()
-	// 	console.log(data)
-	// }
+	allTasksOpenedLenght = () => {
+		return (this.state.tasks).tasks.filter((task) => task.status.status !== 'Closed').length
+	}
+
+	allTasksClosedLenght = () => {
+		return (this.state.tasks).tasks.filter((task) => task.status.status === 'Closed').length
+	}
 
 	render() {
 
-		if(this.state.isLoaded) {
+		const { isLoaded } = this.state;
+		
+		// TO DO
+		// To be refactored
+		
+		if(!isLoaded) {
 			return <div>Loading...</div>
 		}else{
 
 			return (
-			<div>
-				<h1>Tasks</h1>
-				<ul>
-					{this.state.tasks.map(task => (
-						<li key={task.id}>
-							{task.title}
-						</li>
-					))}
-				</ul>
+			<div className="grid-container">
+				<TaskCard length={this.allTasksLenght()} title={"All Tasks"} />
+				<TaskCard length={this.allTasksOpenedLenght()} title={"Opened Tasks"} />
+				<TaskCard length={this.allTasksClosedLenght()} title={"Closed Tasks"} />
 			</div>
 			)
 		}

@@ -7,7 +7,6 @@ class App extends Component {
   render() {
     return(
       <div>
-        <h1>Oie</h1>
         <Form />
         <Tasks />
       </div>
